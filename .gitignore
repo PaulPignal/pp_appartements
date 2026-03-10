@@ -7,3 +7,5 @@ profiles.yml
 *.duckdb
 *.log
 .DS_Store
+data/dvf/raw/
+data/dvf/zip/

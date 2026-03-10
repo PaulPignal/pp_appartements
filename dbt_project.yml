@@ -15,6 +15,9 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+vars:
+  dvf_raw_glob: "data/dvf/raw/*.txt"
+
 models:
   appartements:
     +materialized: view
