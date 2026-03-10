@@ -57,6 +57,23 @@ cd site/map && python3 -m http.server 8000
 
 Then open `http://localhost:8000`.
 
+## GitHub Pages
+
+The repository includes a GitHub Pages workflow that deploys the static map from
+`site/map/`.
+
+To activate it in GitHub:
+
+1. Open the repository settings.
+2. Go to `Pages`.
+3. In `Build and deployment`, select `GitHub Actions` as the source.
+4. Push changes to `main`, or manually run the `Deploy Map To GitHub Pages`
+   workflow from the `Actions` tab.
+
+Once enabled, the map will be published at a URL like:
+
+`https://paulpignal.github.io/pp_appartements/`
+
 ## Project layout
 
 - `models/`: transformation models
