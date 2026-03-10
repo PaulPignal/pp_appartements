@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: mart_dvf__paris
+    description: >
+      Curated Paris DVF mart with the most useful transaction, address and
+      property columns ordered for analysis.
+    columns:
+      - name: mutation_id
+        tests:
+          - not_null
+      - name: date_mutation
+        tests:
+          - not_null
+      - name: adresse_ligne_1
+      - name: prix_m2_bati
+
+  - name: mart_dvf__paris_appartements
+    description: >
+      Analyst-friendly Paris mart restricted to apartments, with business-style
+      column names and arrondissement derived from the postal code.

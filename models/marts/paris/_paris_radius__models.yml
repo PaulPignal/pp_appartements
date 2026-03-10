@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: mart_dvf__paris_within_radius
+    description: >
+      Paris DVF rows matched to the official Paris address base and filtered by
+      distance from a configurable reference address.
+
+  - name: mart_dvf__paris_appartements_within_radius
+    description: >
+      Analyst-friendly apartment-only mart for Paris addresses within the
+      configured radius around the reference address.
+
+  - name: mart_dvf__comparables_visite
+    description: >
+      Final comparison mart for apartments near the reference address, focused
+      on price per square meter and the key fields useful when comparing visited
+      properties.

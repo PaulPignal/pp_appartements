@@ -17,6 +17,12 @@ clean-targets:
 
 vars:
   dvf_raw_glob: "data/dvf/raw/*.txt"
+  paris_addresses_csv: "data/addresses/paris/adresses-paris.csv"
+  reference_no_voie: "204"
+  reference_voie: "Rue de Vaugirard"
+  reference_code_postal: "75015"
+  reference_commune: "Paris"
+  search_radius_meters: 500
 
 models:
   appartements:

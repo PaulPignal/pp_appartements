@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: stg_addresses__paris
+    description: Official Paris address base loaded from data.gouv.fr.
+  - name: stg_addresses__reference
+    description: Reference address resolved from project variables.
