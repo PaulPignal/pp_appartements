@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DB_PATH = ROOT / "appartements.duckdb"
 OUT_DIR = ROOT / "site" / "map"
 OUT_FILE = OUT_DIR / "comparables.geojson"
+META_FILE = OUT_DIR / "reference.json"
 
 
 QUERY = """
@@ -51,6 +52,18 @@ where source.prix_m2 between stats.p05_prix_m2 and stats.p95_prix_m2
 order by distance_metres asc, date_vente desc
 """
 
+REFERENCE_QUERY = """
+select
+  numero as reference_no_voie,
+  voie_nom as reference_voie,
+  code_postal as reference_code_postal,
+  commune_nom as reference_commune,
+  longitude,
+  latitude
+from main_staging.stg_addresses__reference
+limit 1
+"""
+
 
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -58,6 +71,8 @@ def main() -> None:
     con = duckdb.connect(str(DB_PATH), read_only=True)
     rows = con.execute(QUERY).fetchall()
     columns = [desc[0] for desc in con.description]
+    reference_row = con.execute(REFERENCE_QUERY).fetchone()
+    reference_columns = [desc[0] for desc in con.description]
 
     features = []
     for row in rows:
@@ -81,6 +96,12 @@ def main() -> None:
 
     geojson = {"type": "FeatureCollection", "features": features}
     OUT_FILE.write_text(json.dumps(geojson, ensure_ascii=False), encoding="utf-8")
+    if reference_row:
+        reference = dict(zip(reference_columns, reference_row))
+        for key, value in list(reference.items()):
+            if isinstance(value, Decimal):
+                reference[key] = float(value)
+        META_FILE.write_text(json.dumps(reference, ensure_ascii=False), encoding="utf-8")
     print(f"Wrote {len(features)} features to {OUT_FILE}")
 
 

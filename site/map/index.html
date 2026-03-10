@@ -217,40 +217,16 @@
       const formatInt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
       const formatOne = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
 
-      const referenceLatLng = [48.84137661762898, 2.306871210469848];
-
       const map = L.map("map", {
         zoomControl: true,
         scrollWheelZoom: true,
-      }).setView(referenceLatLng, 15);
+      }).setView([48.84137661762898, 2.306871210469848], 15);
 
       L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
         maxZoom: 20,
         subdomains: "abcd",
         attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
       }).addTo(map);
-
-      const referenceIcon = L.divIcon({
-        className: "",
-        html: '<div class="reference-pin"></div>',
-        iconSize: [26, 26],
-        iconAnchor: [13, 26],
-        popupAnchor: [0, -24],
-      });
-
-      const referenceMarker = L.marker(referenceLatLng, {
-        icon: referenceIcon,
-        zIndexOffset: 1000,
-      })
-        .bindPopup(
-          `
-            <div>
-              <h3 class="popup-title">Adresse de référence</h3>
-              <div>204 Rue de Vaugirard, 75015 Paris</div>
-            </div>
-          `
-        )
-        .addTo(map);
 
       function colorForPrice(price) {
         if (price == null) return "#6f685f";
@@ -276,9 +252,34 @@
         `;
       }
 
-      fetch("./comparables.geojson")
-        .then((response) => response.json())
-        .then((geojson) => {
+      Promise.all([
+        fetch("./comparables.geojson").then((response) => response.json()),
+        fetch("./reference.json").then((response) => response.json()),
+      ]).then(([geojson, reference]) => {
+          const referenceLatLng = [reference.latitude, reference.longitude];
+          const referenceLabel = `${reference.reference_no_voie} ${reference.reference_voie}, ${reference.reference_code_postal} ${reference.reference_commune}`;
+          const referenceIcon = L.divIcon({
+            className: "",
+            html: '<div class="reference-pin"></div>',
+            iconSize: [26, 26],
+            iconAnchor: [13, 26],
+            popupAnchor: [0, -24],
+          });
+
+          const referenceMarker = L.marker(referenceLatLng, {
+            icon: referenceIcon,
+            zIndexOffset: 1000,
+          })
+            .bindPopup(
+              `
+                <div>
+                  <h3 class="popup-title">Adresse de référence</h3>
+                  <div>${referenceLabel}</div>
+                </div>
+              `
+            )
+            .addTo(map);
+
           const features = geojson.features || [];
           document.getElementById("stat-count").textContent = formatInt.format(features.length);
 
@@ -319,6 +320,8 @@
             const bounds = layer.getBounds();
             bounds.extend(referenceMarker.getLatLng());
             map.fitBounds(bounds, { padding: [28, 28] });
+          } else {
+            map.setView(referenceLatLng, 15);
           }
         });
     </script>
