@@ -1,0 +1,7 @@
+appartements:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: appartements.duckdb
+      threads: 4

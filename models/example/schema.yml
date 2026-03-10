@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: my_first_dbt_model
+    description: Starter model used to validate the project setup.
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+
+  - name: my_second_dbt_model
+    description: Simple downstream model referencing the starter model.
+    columns:
+      - name: id
+        tests:
+          - not_null
